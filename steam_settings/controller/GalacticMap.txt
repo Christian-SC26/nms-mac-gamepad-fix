@@ -1,0 +1,16 @@
+exit=START
+boost=RBUMPER
+scan=LSTICK
+Move=LJOY=joystick_move
+SELECT=A
+galaxyback=B
+fire=X
+expand=Y
+Down=DLTRIGGER
+up=DRTRIGGER
+alt_down=DUP
+alt_up=DDOWN
+alt_right=DRIGHT
+alt_left=DLEFT
+home=RSTICK
+Camera=RJOY=joystick_move
