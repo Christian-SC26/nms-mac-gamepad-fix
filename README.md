@@ -27,22 +27,19 @@
 
 ### Быстрая установка (1 клик)
 
-#### Вариант 1: Через Finder
-1. Дважды кликните по файлу **`patch.command`**.
-2. Скрипт сам найдёт `No Man's Sky.app` (на внешнем диске `/Volumes/*`, в `/Applications` или через окно выбора файла).
-3. Патч применится автоматически, переподпишет dylib и снимет карантин macOS.
+#### Способ 1: Скачать готовый файл из Releases (Без клонирования репозитория)
+1. Перейдите на страницу **[Releases](../../releases)** и скачайте архив **`NoMansSky_Gamepad_Fix.zip`** (или напрямую файл `NoMansSky_Gamepad_Fix.command`).
+2. Распакуйте архив и дважды кликните по файлу **`NoMansSky_Gamepad_Fix.command`**.
+3. Скрипт сам найдёт игру `No Man's Sky.app` (на внешнем диске `/Volumes/*`, в `/Applications` или откроет системный выбор), установит нужные компоненты, переподпишет приложение и снимет ограничения macOS.
 
-#### Вариант 2: Через Терминал
-```bash
-# Автопоиск:
-./patch.command
+*(Если macOS при первом запуске напишет, что скрипт скачан из интернета — нажмите правой кнопкой мыши по файлу -> «Открыть», либо выполните в терминале: `chmod +x ~/Downloads/NoMansSky_Gamepad_Fix.command`)*
 
-# Либо с указанием пути к игре:
-./patch.command "/Volumes/Data/No Man's Sky.app"
-```
+#### Способ 2: Через клонирование репозитория
+1. Склонируйте репозиторий: `git clone https://github.com/Christian-SC26/nms-mac-gamepad-fix.git`
+2. Запустите `./patch.command` (или дважды кликните по нему в Finder).
 
 #### Как обновляться на новую версию игры?
-Когда вы скачаете новую версию *No Man's Sky*, просто запустите `patch.command` ещё раз — он перезапишет библиотеки и применит патч к новой версии!
+Когда вы скачаете новую версию *No Man's Sky*, просто запустите `NoMansSky_Gamepad_Fix.command` (или `patch.command`) ещё раз — он мгновенно накатит фикс на новую версию!
 
 ---
 
@@ -53,14 +50,17 @@ Features full support for Steam Input Action Set Layers (in-game Quick Menu, bas
 
 ### Quick Installation
 
-#### Method 1: Double-click in Finder
-1. Double-click **`patch.command`**.
-2. The script will auto-detect `No Man's Sky.app` (on external drives `/Volumes/*`, `/Applications`, or via a native file chooser).
-3. The patch will be applied, binaries ad-hoc signed, and quarantine attributes cleared.
+#### Method 1: Download Standalone Installer (No Git needed)
+1. Go to the **[Releases](../../releases)** page.
+2. Download **`NoMansSky_Gamepad_Fix.zip`** (or `NoMansSky_Gamepad_Fix.command`).
+3. Extract the ZIP and double-click **`NoMansSky_Gamepad_Fix.command`**.
+4. The installer will auto-detect `No Man's Sky.app`, install the fix, re-sign the app, and remove quarantine attributes.
 
-#### Method 2: Terminal
+#### Method 2: Git Clone
 ```bash
-./patch.command "/path/to/No Man's Sky.app"
+git clone https://github.com/Christian-SC26/nms-mac-gamepad-fix.git
+cd nms-mac-gamepad-fix
+./patch.command
 ```
 
 ### Building from Source (Optional)

@@ -1,6 +1,35 @@
 #!/bin/bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DIST_DIR="$SCRIPT_DIR/dist"
+BIN_DIR="$SCRIPT_DIR/bin"
+SETTINGS_DIR="$SCRIPT_DIR/steam_settings"
+
+echo "=== Building Standalone No Man's Sky Gamepad Fix Installer ==="
+
+# Ensure binaries are built
+if [ ! -f "$BIN_DIR/libsteam_api.dylib" ] || [ ! -f "$BIN_DIR/libsteam_emu.dylib" ]; then
+    echo "[*] Building binaries first..."
+    "$SCRIPT_DIR/build.sh"
+fi
+
+mkdir -p "$DIST_DIR"
+PAYLOAD_TAR="/tmp/nms_payload_$$.tar.gz"
+trap 'rm -f "$PAYLOAD_TAR"' EXIT
+
+echo "[*] Packaging bin/ and steam_settings/..."
+tar -czf "$PAYLOAD_TAR" -C "$SCRIPT_DIR" bin steam_settings
+
+OUTPUT_CMD="$DIST_DIR/NoMansSky_Gamepad_Fix.command"
+OUTPUT_ZIP="$DIST_DIR/NoMansSky_Gamepad_Fix.zip"
+
+echo "[*] Generating standalone $OUTPUT_CMD..."
+
+cat << 'HEADER_EOF' > "$OUTPUT_CMD"
+#!/bin/bash
+set -euo pipefail
+
 # ANSI color codes
 BOLD='\033[1m'
 GREEN='\033[0;32m'
@@ -9,30 +38,23 @@ YELLOW='\033[0;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 echo -e "${BOLD}${CYAN}====================================================${NC}"
 echo -e "${BOLD}${CYAN}   No Man's Sky Mac (Cracked) Gamepad Fix Installer ${NC}"
+echo -e "${BOLD}${CYAN}   Single-File Standalone Edition                   ${NC}"
 echo -e "${BOLD}${CYAN}====================================================${NC}\n"
 
-# Verify repo assets
-BIN_DIR="$SCRIPT_DIR/bin"
-SETTINGS_DIR="$SCRIPT_DIR/steam_settings"
+TEMP_DIR=$(mktemp -d /tmp/nms_fix_payload.XXXXXX)
+cleanup() {
+    rm -rf "$TEMP_DIR"
+}
+trap cleanup EXIT
 
-if [ ! -f "$BIN_DIR/libsteam_api.dylib" ] || [ ! -f "$BIN_DIR/libsteam_emu.dylib" ]; then
-    echo -e "${YELLOW}[*] Prebuilt binaries missing or incomplete. Building from source...${NC}"
-    if [ -f "$SCRIPT_DIR/build.sh" ]; then
-        "$SCRIPT_DIR/build.sh"
-    else
-        echo -e "${RED}[-] Error: Cannot build. Missing $BIN_DIR/libsteam_api.dylib and $BIN_DIR/libsteam_emu.dylib${NC}"
-        exit 1
-    fi
-fi
+echo -e "${CYAN}[*] Extracting embedded payload...${NC}"
+ARCHIVE_LINE=$(awk '/^__PAYLOAD_BEGINS__/ {print NR + 1; exit 0; }' "$0")
+tail -n +"$ARCHIVE_LINE" "$0" | base64 -d | tar -xz -C "$TEMP_DIR"
 
-if [ ! -d "$SETTINGS_DIR/controller" ]; then
-    echo -e "${RED}[-] Error: Missing steam_settings/controller in $SCRIPT_DIR!${NC}"
-    exit 1
-fi
+BIN_DIR="$TEMP_DIR/bin"
+SETTINGS_DIR="$TEMP_DIR/steam_settings"
 
 APP_PATH=""
 
@@ -49,9 +71,10 @@ if [ -z "$APP_PATH" ]; then
     echo -e "${CYAN}[*] Searching for No Man's Sky.app...${NC}"
     CANDIDATES=()
     
-    # Check current and parent directory
-    [ -d "$SCRIPT_DIR/No Man's Sky.app" ] && CANDIDATES+=("$SCRIPT_DIR/No Man's Sky.app")
-    [ -d "$SCRIPT_DIR/../No Man's Sky.app" ] && CANDIDATES+=("$SCRIPT_DIR/../No Man's Sky.app")
+    # Check current directory where script was run or dropped
+    SCRIPT_RUN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    [ -d "$SCRIPT_RUN_DIR/No Man's Sky.app" ] && CANDIDATES+=("$SCRIPT_RUN_DIR/No Man's Sky.app")
+    [ -d "$SCRIPT_RUN_DIR/../No Man's Sky.app" ] && CANDIDATES+=("$SCRIPT_RUN_DIR/../No Man's Sky.app")
     
     # Check /Applications and ~/Applications
     [ -d "/Applications/No Man's Sky.app" ] && CANDIDATES+=("/Applications/No Man's Sky.app")
@@ -146,7 +169,7 @@ cp -R "$SETTINGS_DIR/"* "$RESOURCES_DIR/steam_settings/"
 # Fix permissions
 chmod -R u+rwX "$RESOURCES_DIR/steam_settings"
 
-# Code sign only modified binaries and top-level app bundle (avoids slow deep scanning of 20GB PAKs)
+# Code sign modified binaries and top-level app bundle
 echo -e "${CYAN}[*] Applying ad-hoc code signature...${NC}"
 codesign --force -s - "$MACOS_DIR/libsteam_api.dylib"
 codesign --force -s - "$MACOS_DIR/libsteam_emu.dylib"
@@ -160,8 +183,23 @@ echo -e "${BOLD}${GREEN}   [✓] GAMEPAD PATCH SUCCESSFULLY INSTALLED!       ${N
 echo -e "${BOLD}${GREEN}====================================================${NC}"
 echo -e "${GREEN}1. Turn on your controller (Xbox, PS4/PS5, Switch Pro, etc. via Bluetooth or USB).${NC}"
 echo -e "${GREEN}2. Launch No Man's Sky.${NC}"
-echo -e "${GREEN}3. Your gamepad will work immediately in menus and gameplay!${NC}\n"
+echo -e "${GREEN}3. Your gamepad will work immediately in menus, Quick Menu, and gameplay!${NC}\n"
 
 if [ -t 0 ] && [ -z "${CI:-}" ]; then
     read -rp "Press [Enter] to exit..." _dummy || true
 fi
+
+exit 0
+
+__PAYLOAD_BEGINS__
+HEADER_EOF
+
+base64 < "$PAYLOAD_TAR" >> "$OUTPUT_CMD"
+chmod +x "$OUTPUT_CMD"
+
+echo "[+] Created standalone installer: $OUTPUT_CMD"
+echo "[*] Creating zip archive: $OUTPUT_ZIP..."
+(cd "$DIST_DIR" && rm -f "$OUTPUT_ZIP" && zip -q -y "NoMansSky_Gamepad_Fix.zip" "NoMansSky_Gamepad_Fix.command")
+
+echo "[+] Done! Standalone files are ready in $DIST_DIR:"
+ls -lh "$DIST_DIR"
