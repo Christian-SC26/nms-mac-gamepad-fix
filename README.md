@@ -20,7 +20,8 @@
 * Внедряется нативный мост `libsteam_api.dylib`, который перехватывает `SteamAPI_RunCallbacks()` и `_GamepadIsConnected()`.
 * Состояние стиков, кнопок и триггеров непрерывно считывается напрямую через системный `GameController.framework`.
 * Поддерживается горячее подключение (hotplug / пробуждение контроллера из спящего режима).
-* Встроены готовые наборы действий Steam Input (`FRONTEND`, `OnFootControls`, `ShipControls` и др.).
+* Полная поддержка динамических слоев управления (**Action Set Layers**) для меню быстрого использования (Quick Menu: лечение, призыв корабля, карта) и режимов строительства с отображением глифов кнопок.
+* Встроены готовые наборы действий Steam Input (`FRONTEND`, `OnFootControls`, `OnFootQuickMenu`, `ShipControls`, `ShipQuickMenu` и др.).
 
 ---
 
@@ -48,6 +49,7 @@
 ## English
 
 Automatic patch that enables full gamepad support (Xbox, PlayStation DualSense/DualShock 4, Nintendo Switch Pro, and other Bluetooth/USB gamepads) in cracked builds of *No Man's Sky* on macOS (Apple Silicon & Intel).
+Features full support for Steam Input Action Set Layers (in-game Quick Menu, base building, button glyphs, and responsive tab switching via bumpers & D-Pad).
 
 ### Quick Installation
 
