@@ -1,0 +1,7 @@
+Build_Purchase=START
+Down=DDOWN
+build_SelectionMode=X
+build_flip=X
+build_nextpart=DLTRIGGER
+build_toggle_catalogue=Y
+up=DUP

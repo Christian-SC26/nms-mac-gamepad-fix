@@ -1,0 +1,10 @@
+Down=DDOWN
+SELECT=A
+alt_left=DUP
+alt_right=DDOWN
+back=B
+terrain_shape=X
+terrain_switch=B
+ui_left=DLEFT,LBUMPER
+ui_right=DRIGHT,RBUMPER
+up=DUP

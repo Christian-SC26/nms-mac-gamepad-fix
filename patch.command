@@ -132,13 +132,19 @@ echo -e "${CYAN}[*] Installing libsteam_emu.dylib (Goldberg Steam emulator)...${
 cp "$BIN_DIR/libsteam_emu.dylib" "$MACOS_DIR/libsteam_emu.dylib"
 chmod +x "$MACOS_DIR/libsteam_emu.dylib"
 
-# Copy steam_settings
-echo -e "${CYAN}[*] Installing steam_settings and controller mappings...${NC}"
-mkdir -p "$MACOS_DIR/steam_settings"
-cp -R "$SETTINGS_DIR/"* "$MACOS_DIR/steam_settings/"
+# Remove legacy steam_settings inside Contents/MacOS if present (prevents macOS codesign bundle errors)
+if [ -d "$MACOS_DIR/steam_settings" ]; then
+    rm -rf "$MACOS_DIR/steam_settings"
+fi
+
+# Copy steam_settings to Contents/Resources
+RESOURCES_DIR="$APP_PATH/Contents/Resources"
+echo -e "${CYAN}[*] Installing steam_settings and controller mappings into Contents/Resources...${NC}"
+mkdir -p "$RESOURCES_DIR/steam_settings"
+cp -R "$SETTINGS_DIR/"* "$RESOURCES_DIR/steam_settings/"
 
 # Fix permissions
-chmod -R u+rwX "$MACOS_DIR/steam_settings"
+chmod -R u+rwX "$RESOURCES_DIR/steam_settings"
 
 # Code sign only modified binaries and top-level app bundle (avoids slow deep scanning of 20GB PAKs)
 echo -e "${CYAN}[*] Applying ad-hoc code signature...${NC}"

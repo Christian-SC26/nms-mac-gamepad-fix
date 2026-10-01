@@ -1,0 +1,12 @@
+Run=RSTICK
+back=B
+build_SelectionMode=X
+build_camera=LSTICK
+build_delete=DLTRIGGER
+build_duplicate=RBUMPER
+build_menu=DUP
+build_nextpart=LBUMPER
+build_paint=BACK
+build_pickup=DRTRIGGER
+build_switchbase=START
+build_wiring=Y

@@ -1,0 +1,17 @@
+back=B
+build_SelectionMode=X
+build_arotleft=LBUMPER
+build_arotright=RBUMPER
+build_camera=LSTICK
+build_menu=DUP
+build_nextpart=DLTRIGGER
+build_paint=BACK
+build_rot_axis=RSTICK
+build_scaledown=DLEFT
+build_scaleup=DRIGHT
+build_snapping=DDOWN
+build_switchbase=START
+build_wiring=Y
+fire=DRTRIGGER
+rotate_left=LBUMPER
+rotate_right=RBUMPER

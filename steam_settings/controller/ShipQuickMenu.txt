@@ -1,0 +1,6 @@
+Down=DDOWN
+SELECT=A
+back=B
+ui_left=DLEFT,LBUMPER
+ui_right=DRIGHT,RBUMPER
+up=DUP
