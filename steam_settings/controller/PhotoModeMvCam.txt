@@ -1,6 +1,7 @@
 Camera=RJOY=joystick_move
 Down=DDOWN
 Move=LJOY=joystick_move
+SELECT=A
 alt_left=LBUMPER
 alt_right=RBUMPER
 exit=B

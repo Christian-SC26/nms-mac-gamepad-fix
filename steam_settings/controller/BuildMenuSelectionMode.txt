@@ -1,4 +1,3 @@
-Run=RSTICK
 back=B
 build_SelectionMode=X
 build_camera=LSTICK

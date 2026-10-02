@@ -280,11 +280,11 @@ static bool is_origin_pressed(int origin) {
         // Back / Share / Minus
         case 160: case 81: case 126:
             return (b & (1 << 5)) != 0;
-        // Left Trigger / L2 / ZL
-        case 161: case 78: case 123:
+        // Left Trigger / L2 / ZL (Steam origin 161, Goldberg origin 162, PS 78, Switch 123)
+        case 161: case 162: case 78: case 123:
             return g_gamepad_state->trigger[0].pressedCurrent != 0;
-        // Right Trigger / R2 / ZR
-        case 162: case 79: case 124:
+        // Right Trigger / R2 / ZR (Steam origin 162/163, Goldberg origin 164, PS 79, Switch 124)
+        case 163: case 164: case 79: case 124:
             return g_gamepad_state->trigger[1].pressedCurrent != 0;
         // Left Stick Click / L3
         case 166: case 82: case 127:

@@ -8,6 +8,8 @@ alt_up=DUP
 back=B
 build_SelectionMode=X
 build_pinrecipe=RSTICK
+build_switchbase=START
+build_toggle_catalogue=Y
 build_wiring=Y
 char_cam=RJOY=joystick_move
 char_show=LBUMPER
@@ -28,4 +30,6 @@ quitmenu=START
 right=RBUMPER
 shop_buy_sell=Y
 skipmessage=BACK
+solarsys_scan=LSTICK
+solarsys_togglemap=DRIGHT
 up=DRIGHT
